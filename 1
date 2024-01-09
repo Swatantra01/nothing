@@ -1,0 +1,66 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+class Student {
+    String name;
+    String USN;
+    String dept;
+    String section;
+    double CGPA;
+
+    Student(String name, String USN, String dept, String section, double CGPA) {
+        this.name = name;
+        this.USN = USN;
+        this.dept = dept;
+        this.section = section;
+        this.CGPA = CGPA;
+    }
+
+    public String toString() {
+        return "Name: " + name + ", USN: " + USN + ", Department: " + dept + ", Section: " + section + ", CGPA: " + CGPA;
+    }
+}
+
+public class StudentInfo {
+    public static void main(String[] args) {
+        List<Student> students = new ArrayList<>();
+        
+        // Add some students to the list
+        students.add(new Student("Alice", "1XX19IS001", "ISE", "A", 8.7));
+        students.add(new Student("Bob", "1XX19CS002", "CSE", "C", 9.1));
+        students.add(new Student("Charlie", "1XX19EC003", "ECE", "B", 8.3));
+        students.add(new Student("David", "1XX19IS004", "ISE", "A", 8.9));
+        students.add(new Student("Eve", "1XX19CS005", "CSE", "C", 8.6));
+
+        // Searching for students with CGPA > 8.5
+        System.out.println("Students with CGPA > 8.5:");
+        Iterator<Student> iterator = students.iterator();
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if (student.CGPA > 8.5) {
+                System.out.println(student);
+            }
+        }
+
+        // Students from ISE department
+        System.out.println("\nStudents from ISE department:");
+        iterator = students.iterator();
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if ("ISE".equals(student.dept)) {
+                System.out.println(student);
+            }
+        }
+
+        // Students from 'C' section
+        System.out.println("\nStudents from 'C' section:");
+        iterator = students.iterator();
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if ("C".equals(student.section)) {
+                System.out.println(student);
+            }
+        }
+    }
+}
