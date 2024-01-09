@@ -1,0 +1,113 @@
+package is001;
+
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
+
+class Detail {
+    String name;
+    long number;
+
+    Detail(String name, long number) {
+        this.name = name;
+        this.number = number;
+    }
+
+    public String toString() {
+        return "Name: " + this.name + ", Number: " + this.number;
+    }
+}
+
+public class Contact {
+    // Method to get missed calls
+    public static LinkedList<Long> getMissedCalls() {
+        LinkedList<Long> missedCalls = new LinkedList<>();
+        Scanner in = new Scanner(System.in);
+        System.out.println("Enter number of missed calls:");
+        int n = in.nextInt();
+
+        System.out.println("Enter the missed call numbers:");
+        for (int i = 0; i < n; i++) {
+            long number = in.nextLong();
+            missedCalls.add(number);
+        }
+        return missedCalls;
+    }
+
+    // Method to delete a missed call
+    public static LinkedList<Long> deleteMissedCall(LinkedList<Long> missedCalls, long number) {
+        missedCalls.remove(number);
+        return missedCalls;
+    }
+
+    // Method to display missed call details
+    public static void displayMissedCalls(LinkedList<Long> missedCalls, HashMap<Long, String> phoneBook) {
+        for (Long number : missedCalls) {
+            String name = phoneBook.getOrDefault(number, "private caller");
+            System.out.println("Missed call from: " + name + " (Number: " + number + ")");
+        }
+    }
+
+    // Method to display all contacts starting with "A"
+    public static void displayAContacts1(HashMap<Long, String> phoneBook) {
+        for (Long number : phoneBook.keySet()) {
+            String name = phoneBook.get(number);
+            if (name.startsWith("A")) {
+                System.out.println(name + " : " + number);
+            }
+        }
+    }
+    
+    public static void displayAContacts(HashMap<Long, String> phoneBook) {
+        boolean found = false;
+        for (Long number : phoneBook.keySet()) {
+            String name = phoneBook.get(number);
+            if (name != null && name.startsWith("A")) {
+                System.out.println(name + " : " + number);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No contacts found starting with 'A'");
+        }
+    }
+
+
+    public static void main(String[] args) {
+        HashMap<Long, String> phoneBook = new HashMap<>();
+        LinkedList<Long> missedCalls = new LinkedList<>();
+        Scanner in = new Scanner(System.in);
+
+        // Adding contacts
+        System.out.println("Enter the number of contacts:");
+        int n = in.nextInt();
+        System.out.println("Enter the contacts (name and number):");
+        for (int i = 0; i < n; i++) {
+            String name = in.next();
+            long number = in.nextLong();
+            phoneBook.put(number, name);
+        }
+
+        // Handling missed calls
+        missedCalls = getMissedCalls();
+
+        // User options
+        System.out.println("Missed Calls:");
+        displayMissedCalls(missedCalls, phoneBook);
+
+        System.out.println("Enter a number to delete from missed calls or 0 to skip:");
+        long numToDelete = in.nextLong();
+        if (numToDelete != 0) {
+            missedCalls = deleteMissedCall(missedCalls, numToDelete);
+        }
+
+        // Display remaining missed calls
+        System.out.println("Updated Missed Calls:");
+        displayMissedCalls(missedCalls, phoneBook);
+
+        // Display contacts starting with "A"
+        System.out.println("Contacts starting with 'A':");
+        displayAContacts1(phoneBook);
+    }
+}
