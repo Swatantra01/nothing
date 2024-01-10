@@ -1,0 +1,132 @@
+package is001;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class EmployeeDataEntry implements ActionListener {
+
+    private JFrame frame;
+    private JTextField nameField, ageField, familyMembersField, addressField;
+    private JComboBox<String> payscaleComboBox;
+    private JRadioButton maleRadioButton, femaleRadioButton;
+    private JButton submitButton;
+
+    public EmployeeDataEntry() {
+        frame = new JFrame("Employee Data Entry");
+        frame.setLayout(new FlowLayout());
+
+        // Employee Name
+        addLabelAndField("Employee Name:");
+
+        // Employee Age
+        addLabelAndField("Employee Age:");
+
+        // Employee Payscale
+        addLabelAndPayscaleComboBox("Employee Payscale:");
+
+        // Number of Family Members
+        addLabelAndField("Number of Family Members:");
+
+        // Address
+        addLabelAndField("Address:");
+
+        // Gender
+        addLabelAndGenderRadioButtons("Gender:");
+
+        // Submit Button
+        submitButton = new JButton("Submit");
+        submitButton.addActionListener(this);
+
+        // Add components to the frame
+        frame.add(submitButton);
+
+        frame.setSize(400, 350);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    private void addLabelAndField(String labelText) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel(labelText);
+        JTextField textField = new JTextField(15);
+        panel.add(label);
+        panel.add(textField);
+        frame.add(panel);
+
+        if (labelText.equals("Employee Age:")) {
+            ageField = textField;
+        } else if (labelText.equals("Number of Family Members:")) {
+            familyMembersField = textField;
+        } else if (labelText.equals("Address:")) {
+            addressField = textField;
+        } else if (labelText.equals("Employee Name:")) {
+            nameField = textField;
+        }
+    }
+
+    private void addLabelAndPayscaleComboBox(String labelText) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel(labelText);
+        String[] payscales = {"Select", "A", "B", "C"};
+        payscaleComboBox = new JComboBox<>(payscales);
+        panel.add(label);
+        panel.add(payscaleComboBox);
+        frame.add(panel);
+    }
+
+    private void addLabelAndGenderRadioButtons(String labelText) {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel(labelText);
+        maleRadioButton = new JRadioButton("Male");
+        femaleRadioButton = new JRadioButton("Female");
+        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup.add(maleRadioButton);
+        genderGroup.add(femaleRadioButton);
+        panel.add(label);
+        panel.add(maleRadioButton);
+        panel.add(femaleRadioButton);
+        frame.add(panel);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new EmployeeDataEntry());
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == submitButton) {
+            if (validateAge()) {
+                displayEmployeeData();
+            }
+        }
+    }
+
+    private boolean validateAge() {
+        try {
+            int age = Integer.parseInt(ageField.getText());
+            if (age >= 22 && age <= 60) {
+                return true;
+            } else {
+                JOptionPane.showMessageDialog(frame, "Invalid Age! Please enter age between 22 and 60.", "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(frame, "Invalid Age! Please enter a valid number.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    private void displayEmployeeData() {
+        String gender = maleRadioButton.isSelected() ? "Male" : (femaleRadioButton.isSelected() ? "Female" : "Unknown");
+        String message = "Employee Name: " + nameField.getText() + "\n"
+                + "Employee Age: " + ageField.getText() + "\n"
+                + "Payscale: " + payscaleComboBox.getSelectedItem() + "\n"
+                + "Number of Family Members: " + familyMembersField.getText() + "\n"
+                + "Address: " + addressField.getText() + "\n"
+                + "Gender: " + gender;
+
+        JOptionPane.showMessageDialog(frame, message, "Employee Data", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
