@@ -1,0 +1,180 @@
+package is001;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.util.*;
+
+class Book
+{
+	String title,author,publisher;
+	int price,id;
+	Book(int e,String a,String b,String c,int d)
+	{
+		title=a;author=b;publisher=c;price=d;id=e;
+	}
+	public String toString()
+	{
+		return id+" "+title+" "+author+" "+publisher+" "+price+" ";
+	}
+}
+class BookComp implements Comparator<Book>
+{
+	@Override
+	public int compare(Book b1,Book b2)
+	{
+		return b1.price-b2.price;
+	}
+}
+
+public class Bookswing extends JFrame{
+	JTextArea outputArea;
+	JTextField idtf,titletf,authortf,publishertf,pricetf;
+	ArrayList<Book> arr=new ArrayList<>();
+	public Bookswing()
+	{
+		setTitle("Book Database");
+		setSize(600,400);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		//setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
+		setLayout(new FlowLayout());
+		outputArea=new JTextArea(15,40);
+		JScrollPane scrolpane=new JScrollPane(outputArea);
+		add(scrolpane,BorderLayout.CENTER);
+		
+		
+		JPanel inputPanel=new JPanel();
+		inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+		inputPanel.add(new JLabel("Enter id:"));
+		idtf=new JTextField(20);
+		inputPanel.add(idtf);
+		inputPanel.add(new JLabel("Enter title:"));
+		titletf=new JTextField(20);
+		inputPanel.add(titletf);
+		inputPanel.add(new JLabel("Enter author:"));
+		authortf=new JTextField(20);
+		inputPanel.add(authortf);
+		inputPanel.add(new JLabel("Enter publisher:"));
+		publishertf=new JTextField(20);
+		inputPanel.add(publishertf);
+		inputPanel.add(new JLabel("Enter price:"));
+		pricetf=new JTextField(20);
+		inputPanel.add(pricetf);
+		
+		JPanel ButtonPanel=new JPanel();
+		JButton addBooks=new JButton("Add books");
+		addBooks.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				addbook();
+			}
+		});
+		ButtonPanel.add(addBooks);
+		
+		JButton dispallBooks=new JButton("Display all books");
+		dispallBooks.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				dispallbooks();
+			}
+		});
+		ButtonPanel.add(dispallBooks);
+		JButton dispbyprice=new JButton("Display all books  sorted by price");
+		dispbyprice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				sortbooksbyprice();
+			}
+		});
+		ButtonPanel.add(dispbyprice);
+		JButton dispbyauthor=new JButton("Display books by Author");
+		dispbyauthor.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				dispbooksbyauthor();
+			}
+		});
+		ButtonPanel.add(dispbyauthor);
+		JButton pricegreater=new JButton("Display books price greater");
+		pricegreater.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				pricegreaterfunc();
+			}
+		});
+		ButtonPanel.add(pricegreater);
+		inputPanel.add(ButtonPanel);
+		
+		add(inputPanel,BorderLayout.SOUTH);
+		setVisible(true);
+	}
+	public void addbook()
+	{
+		int id=Integer.parseInt(idtf.getText());
+		int price=Integer.parseInt(pricetf.getText());
+		String title=titletf.getText();
+		String author=authortf.getText();
+		String publisher=publishertf.getText();
+		Book ob=new Book(id,title,author,publisher,price);
+		arr.add(ob);
+		outputArea.append("Book added: "+ob.toString()+"\n");
+		idtf.setText("");
+		pricetf.setText("");
+		titletf.setText("");
+		authortf.setText("");
+		publishertf.setText("");
+	}
+	public void dispallbooks()
+	{
+		outputArea.append("All books\n");
+		for(Book ob:arr)
+		{
+			outputArea.append(ob.toString()+"\n");
+		}
+	}
+	public void sortbooksbyprice()
+	{
+		Collections.sort(arr,new BookComp());
+		dispallbooks();
+	}
+	public void dispbooksbyauthor()
+	{
+		String authorname=JOptionPane.showInputDialog(this,"Enter author name:");
+		outputArea.append("Books by "+authorname+"\n");
+		for(Book ob:arr)
+		{
+			if(ob.author.equals(authorname))
+			{
+				outputArea.append(ob.toString()+"\n");
+			}
+		}
+	}
+	public void pricegreaterfunc()
+	{
+		int price=Integer.parseInt(JOptionPane.showInputDialog(this,"Enter Minimum price:"));
+		outputArea.append("Books above $"+price+"\n");
+		for(Book ob:arr)
+		{
+			if(ob.price>price)
+			{
+				outputArea.append(ob.toString()+"\n");
+			}
+		}
+		
+	}
+	public static void main(String[] args)
+	{
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				new Bookswing();
+			}
+		});
+	}
+}
