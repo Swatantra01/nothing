@@ -1,0 +1,143 @@
+package labprograms;
+
+import java.util.*;
+class DataBaseCallers
+{
+    public static HashMap<Long,String> contacts=new HashMap<Long,String>();
+    static void createEntry()
+    {
+        contacts.put(new Long("9900726035"),"Ronaldo");
+        contacts.put(new Long("9741278570"),"Messi");
+        contacts.put(new Long("7255554444"),"Deepika");
+        contacts.put(new Long("9700001111"),"Aaron");
+    }
+    static void display()
+    {
+        System.out.println("***************DataBaseCallers*****************");
+        System.out.println(contacts);
+        
+    }
+}
+
+class MissedCallDetails
+{
+    Calendar cal;
+    Long telno;
+    String name;
+    MissedCallDetails(Calendar x,Long y,String z)
+    {
+        cal=x;
+        telno=y;
+        name=z;
+    }
+    void display()
+    {
+        System.out.println("Current time ="+cal.getTime());
+        System.out.println("Telephone Number="+telno);
+        System.out.println("Name ="+name);
+    }
+}
+
+public class Main
+{
+    static LinkedList<MissedCallDetails> amiss=new LinkedList<MissedCallDetails>();
+	public static void main(String[] args) 
+	{
+	    
+	    DataBaseCallers.createEntry();
+	    DataBaseCallers.display();
+	     
+	    while(true)
+	    {   
+	        Scanner read=new Scanner(System.in);
+	        System.out.println("Enter your Choice");
+	        System.out.println("1: add a miss call \n2: Delete based on number \n3: display \n4:Display all the callers name start with A\n5.exit");
+	        int ch=read.nextInt();
+	        switch(ch)
+	        {
+	            case 1:
+	                    System.out.println("Enter the missed call telephone number details");
+	                    Calendar cal=Calendar.getInstance();
+	                    System.out.println("Enter telephone number=");
+	                    Long telnox=read.nextLong();
+	                    String name;
+	                    if(DataBaseCallers.contacts.containsKey(telnox))
+	                    {
+	                        name=DataBaseCallers.contacts.get(telnox);
+	                    }
+	                    else
+	                    {
+	                        name="Private caller";
+	                    }
+
+	                    MissedCallDetails ob=new MissedCallDetails(cal,telnox,name);
+	                    if(amiss.size()==4)
+	                    {
+	                        amiss.removeLast();
+	                    }
+	                    amiss.addFirst(ob);
+	                    System.out.println("************MissedCallDetails********************");
+	                    Iterator<MissedCallDetails> it = amiss.iterator();
+                        while(it.hasNext()) 
+                        {
+                                MissedCallDetails i = it.next();
+                                System.out.println("----------------------------");
+                                i.display();
+                        }
+                        break;
+                case 2: 
+                        System.out.println("Enter number Delete in MissedCallDetails");
+                        Long phonenum=read.nextLong();
+                        Iterator <MissedCallDetails> it2= amiss.iterator();
+                        boolean flag=false;
+                        while(it2.hasNext())
+                        {
+                              MissedCallDetails ob2=it2.next();
+                              if(ob2.telno.equals(phonenum))
+                              {
+                                  flag=true;
+                                  amiss.remove(ob2);
+                                  break;
+                              }
+                        }
+                        if(flag==true)
+                        {
+                            System.out.println("phone number deleted");
+                        }
+                        else
+                        {
+                            System.out.println("phone number not exists list");
+                        }
+                        break;
+                    
+                    
+                case 3:
+                        System.out.println("............MissedCallDetails...............");
+                        Iterator<MissedCallDetails> it1 = amiss.iterator();
+                        while(it1.hasNext()) 
+                        {
+                                MissedCallDetails i = it1.next();
+                                System.out.println("----------------------------");
+                                i.display();
+                        }
+                        break;
+                        
+                case 4:
+                    System.out.println("Display all phone numbers from the callers list whose names start with 'A':");
+                    for (Map.Entry<Long, String> entry : DataBaseCallers.contacts.entrySet()) {
+                        if (entry.getValue().toUpperCase().startsWith("A")) {
+                            System.out.println("Phone Number: " + entry.getKey() + ", Name: " + entry.getValue());
+                        }
+                    }
+                    break;
+                
+                default:
+                            return;
+      
+    
+	        }
+	    }
+		
+	} 
+}
+
