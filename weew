@@ -1,0 +1,85 @@
+package Lab;
+
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+public class pg5 implements ActionListener{
+	JFrame f1;
+	JLabel label1= new JLabel("Employee name");
+	JTextField name =new JTextField(10);
+	JLabel label2= new JLabel("Employee age ");
+	JTextField age =new JTextField(10);
+	JLabel label3= new JLabel("Employee payscale");
+	JComboBox<String> combobox=new JComboBox<String>(new String[] {"A","B","C"});
+	JLabel label4= new JLabel("NO OF FAMILY MEMBERS ");
+	JTextField number =new JTextField(10);
+	JLabel label5= new JLabel("Address");
+	JTextField add =new JTextField(10);
+	JLabel label6= new JLabel("GENDER");
+	JRadioButton male =new JRadioButton("MALE");
+	JRadioButton female =new JRadioButton("FEMALE");
+	JButton submit = new JButton("SUBMIT");
+	public pg5() {
+		f1 =new JFrame("EMPLOYEE DETAILS");
+		f1.setSize(1000,700);
+		f1.setVisible(true);
+		f1.setLayout(new FlowLayout());
+		f1.add(label1);
+		f1.add(name);
+		f1.add(label2);
+		f1.add(age);
+		f1.add(label3);
+		f1.add(combobox);
+		f1.add(label4);
+		f1.add(number);
+		f1.add(label5);
+		f1.add(add);
+		f1.add(label6);
+		f1.add(female);
+		f1.add(male);
+		f1.add(submit);
+		submit.addActionListener(this);
+	}
+	public static void main(String args[]) {
+		SwingUtilities.invokeLater(() ->new pg5());
+	}
+	 public void actionPerformed(ActionEvent e) {
+		 if(e.getSource()==submit) {
+			 if(validateage()) {
+				 displayEmployee();
+			 }
+		 }
+		 
+	 }
+	 private boolean validateage() {
+		
+		 try {
+			 int a=Integer.parseInt(age.getText());
+		 if(a>=22 && a<=60) {
+			 return true;
+		 }
+		 else {
+			 JOptionPane.showMessageDialog(f1, "Inavlid age group try again","ERROR",JOptionPane.ERROR_MESSAGE);
+			 return false;
+		 }
+		 }catch (NumberFormatException ex) {
+			// TODO: handle exception
+			 JOptionPane.showMessageDialog(null, "Inavlid age ","ERROR",JOptionPane.ERROR_MESSAGE);
+			 return false;
+		}	 
+	 }
+	 private void displayEmployee() {
+	        String gender = male.isSelected() ? "Male" : (female.isSelected() ? "Female" : "Unknown");
+	        String message = "Employee Name: " + name.getText() + "\n"
+	                + "Employee Age: " + age.getText() + "\n"
+	                + "Payscale: " + combobox.getSelectedItem() + "\n"
+	                + "Number of Family Members: " + number.getText() + "\n"
+	                + "Address: " + add.getText() + "\n"
+	                + "Gender: " + gender;
+
+	        JOptionPane.showMessageDialog(f1, message, "Employee Data", JOptionPane.INFORMATION_MESSAGE);
+	    }
+}
