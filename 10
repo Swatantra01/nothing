@@ -1,0 +1,141 @@
+package is001;
+
+import java.util.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+import javax.swing.*;
+
+public class PatientMedi extends JFrame implements ActionListener{
+	JTextField pnametf,pagetf,mnametf,mtreattf;
+	JButton insertpbtn,insertMedbtn,searchButton;
+	JTextArea dispArea;
+	Connection conn;
+	PatientMedi()
+	{
+		setTitle("Patient Medicine DB");
+		setLayout(new GridLayout(0,2));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pnametf=new JTextField(20);
+		pagetf=new JTextField(20);
+		mnametf=new JTextField(20);
+		mtreattf=new JTextField(20);
+		add(new JLabel("Enter Patient Name:"));
+		add(pnametf);
+		add(new JLabel("Enter Patient Age:"));
+		add(pagetf);
+		add(new JLabel("Enter Medicine Name:"));
+		add(mnametf);
+		add(new JLabel("Enter Medicine Treatment:"));
+		add(mtreattf);
+		insertpbtn=new JButton("Insert Patient");
+		insertMedbtn=new JButton("Insert Medicine");
+		searchButton=new JButton("Search Patient by Medicine type");
+		dispArea=new JTextArea(25,40);
+		add(insertpbtn);
+		add(insertMedbtn);
+		add(searchButton);
+		add(new JScrollPane(dispArea));
+		insertpbtn.addActionListener(this);
+		insertMedbtn.addActionListener(this);
+		searchButton.addActionListener(this);
+		
+		conn=connectDB();
+		setSize(700,700);
+		setVisible(true);
+	}
+	public Connection connectDB()
+	{
+		Connection conn=null;
+		try {
+			conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/hospital","root","tusharsql");
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+		return conn;
+	}
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource()==	insertpbtn)
+		{
+			insertPatient(conn,pnametf.getText(),pagetf.getText(),mtreattf.getText());
+		}
+		else if(e.getSource()==insertMedbtn)
+		{
+			inserMed(conn,mnametf.getText(),mtreattf.getText());
+		}
+		else if(e.getSource()==searchButton)
+		{
+			String type=JOptionPane.showInputDialog(this,"Enter Treatment type: ");
+			search(conn,type);
+		}
+	}
+	public void insertPatient(Connection conn,String pname,String page,String treat)
+	{
+		try {
+			String query="INSERT INTO patient (pname,page,treatment) VALUES (?,?,?)";
+			PreparedStatement ps=conn.prepareStatement(query);
+			ps.setString(1, pname);
+			ps.setString(2, page);
+			ps.setString(3, treat);
+			int rows=ps.executeUpdate();
+			if(rows>0)
+			{
+				JOptionPane.showMessageDialog(this, "Patient Inserted Succesfully");
+			}else {
+				JOptionPane.showMessageDialog(this, "Patient Insertion Unsuccessfull");
+			}
+		}catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	public void inserMed(Connection conn,String mname,String mtreat)
+	{
+		try {
+			String query="INSERT INTO medi (mname,mtreat) VALUES (?,?)";
+			PreparedStatement ps=conn.prepareStatement(query);
+			ps.setString(1, mname);
+			ps.setString(2, mtreat);
+			int rows=ps.executeUpdate();
+			if(rows>0)
+			{
+				JOptionPane.showMessageDialog(this, "Medicine Inserted Succesfully");
+			}else {
+				JOptionPane.showMessageDialog(this, "Medicine Insertion Unsuccessfull");
+			}
+		}catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+	}
+	public void search(Connection conn,String type)
+	{
+		try
+		{
+			String query="SELECT * FROM patient WHERE treatment=?";
+			PreparedStatement ps=conn.prepareStatement(query);
+			ps.setString(1, type);
+			ResultSet rs=ps.executeQuery();
+			dispArea.setText("");
+			while(rs.next())
+			{
+				String result = " Name: " + rs.getString("pname")
+                + ", Age: " + rs.getString("page") + ", Treatment: " + rs.getString("treatment");
+                dispArea.append(result + "\n");
+			}
+		}catch(Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	public static void main(String[] args)
+	{
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run()
+			{
+				new PatientMedi();
+			}
+		});
+	}
+}
