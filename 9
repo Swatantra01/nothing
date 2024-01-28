@@ -1,0 +1,79 @@
+package is001;
+
+import java.util.*;
+
+class Book {
+    String title;
+    String author;
+    String publisher;
+    double price;
+
+    public Book(String title, String author, String publisher, double price) {
+        this.title = title;
+        this.author = author;
+        this.publisher = publisher;
+        this.price = price;
+    }
+
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", Publisher: " + publisher + ", Price: $" + price;
+    }
+}
+
+public class BookData {
+    
+    public static void main(String[] args) {
+        Map<Integer, Book> books = new HashMap<>();
+        Scanner sc = new Scanner(System.in);
+        Book book1 = new Book("oops with java", "a1", "p1", 1500);
+        Book book2 = new Book("oops with c++", "a2", "p2", 1400);
+        Book book3 = new Book("t1", "a3", "p3", 500);
+        Book book4 = new Book("t2", "a1", "p1", 600);
+        books.put(1, book1);
+        books.put(2, book2);
+        books.put(3, book3);
+        books.put(4, book4);
+
+        System.out.println("Display books");
+        for (Map.Entry<Integer, Book> book : books.entrySet()) {
+            System.out.println(book.getValue());
+        }
+
+        System.out.println("Display books containing title");
+        System.out.print("Enter title: ");
+        String st = sc.nextLine();
+        for (Map.Entry<Integer, Book> book : books.entrySet()) {
+            if (book.getValue().title.contains(st)) {
+                System.out.println(book.getValue());
+            }
+        }
+
+        System.out.println("Display books of Publisher");
+        System.out.print("Enter Publisher: ");
+        String pub = sc.nextLine();
+        for (Map.Entry<Integer, Book> book : books.entrySet()) {
+            if (book.getValue().publisher.equals(pub)) {
+                System.out.println(book.getValue());
+            }
+        }
+
+        System.out.println("Enter title whose publisher you want to update");
+        String titl = sc.nextLine();
+        System.out.print("Enter new Publisher: ");
+        String newpub = sc.nextLine();
+
+        for (Map.Entry<Integer, Book> book : books.entrySet()) {
+            if (book.getValue().title.contains(titl)) {
+                book.getValue().publisher = newpub;
+                System.out.println("Publisher updated successfully for " + book.getValue().title);
+            }
+        }
+
+        System.out.println("Displaying books after changing publisher");
+        for (Map.Entry<Integer, Book> book : books.entrySet()) {
+            System.out.println(book.getValue());
+        }
+
+        sc.close();
+    }
+}
