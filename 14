@@ -1,0 +1,93 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+    <title>T-Shirt Store</title>
+</head>
+<body>
+    <form action="tcon" method="post">
+        T-Shirt Accessories<input type="checkbox" name="access" value="Belt"/>Belt
+        <input type="checkbox" name="access" value="Cap"/>Cap
+        <input type="checkbox" name="access" value="Hair-Band"/>Hair-Band<br>
+        Tag-Line<input type="text" name="tagline" size="50"/><br>
+        T-Shirt Feature:<input type="radio" name="pocket" value="ChestPocket"/>Chest Pocket
+        <input type="radio" name="pocket" value="NoChestPocket"/>No Chest Pocket<br>
+        T-Shirt Color:<select name="Tshirtcolor">
+            <option>Blue</option>
+            <option>Red</option>
+            <option>Green</option>
+        </select><br>
+        <input type="submit" value="Place Orders"/>
+    </form>
+</body>
+</html>
+
+
+
+
+
+import java.io.*;
+import java.sql.*;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.*;
+import jakarta.servlet.http.*;
+
+
+public class tcon extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html");
+        PrintWriter out = response.getWriter();
+        
+        String[] accessories = request.getParameterValues("access");
+        String tshirtTagLine = request.getParameter("tagline");
+        String tshirtOption = request.getParameter("pocket");
+        String tcolor = request.getParameter("Tshirtcolor");
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/tshirt", "root", "tusharsql");
+
+            if (conn != null) {
+                String insertQuery = "INSERT INTO tshirts (TshirtTagLine, TshirtAccessories, TshirtColor, TshirtOption) VALUES (?, ?, ?, ?)";
+                PreparedStatement insertStatement = conn.prepareStatement(insertQuery);
+                insertStatement.setString(1, tshirtTagLine);
+                insertStatement.setString(2, String.join(",", accessories));
+                insertStatement.setString(3, tcolor);
+                insertStatement.setString(4, tshirtOption);
+                insertStatement.executeUpdate();
+                
+                String selectQuery = "SELECT * FROM tshirts";
+                PreparedStatement selectStatement = conn.prepareStatement(selectQuery);
+                ResultSet rs = selectStatement.executeQuery();
+                
+                out.println("<html><head><title>T-shirt Orders</title></head><body>");
+                out.println("<table border='1'><tr><th>Order No</th><th>T-shirt Accessories</th><th>T-shirt Tag-line</th><th>T-shirt Type</th><th>T-shirt Color</th></tr>");
+                int orderNo = 100;
+                while (rs.next()) {
+                    out.println("<tr>");
+                    out.println("<td>" + orderNo + "</td>");
+                    out.println("<td>" + rs.getString("TshirtAccessories") + "</td>");
+                    out.println("<td>" + rs.getString("TshirtTagLine") + "</td>");
+                    out.println("<td>" + rs.getString("TshirtOption") + "</td>");
+                    out.println("<td>" + rs.getString("TshirtColor") + "</td>");
+                    out.println("</tr>");
+                    orderNo++;
+                }
+                out.println("</table>");
+                out.println("<a href='tshirt.jsp'>Back to T-Shirt Form</a>");
+                out.println("</body></html>");
+                
+//                conn.close();
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            out.println("<h2>Error: " + e.getMessage() + "</h2>");
+        }
+    }
+    
+    
+}
